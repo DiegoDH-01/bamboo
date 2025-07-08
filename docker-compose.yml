@@ -24,7 +24,10 @@ services:
       - BAMBOO_HOME=/var/atlassian/application-data/bamboo
     volumes:
       - bamboo_data:/var/atlassian/application-data/bamboo
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock      # 👉 Monta el socket de Docker del host
+      - /usr/bin/docker:/usr/bin/docker                # 👉 Monta el binario real de Docker
+      - /usr/libexec/docker:/usr/libexec/docker        # (algunos sistemas usan esto también)
+
   web:
     build:
       context: ./nginx
