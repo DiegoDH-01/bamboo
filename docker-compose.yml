@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: bamboo
+      POSTGRES_USER: bamboo
+      POSTGRES_PASSWORD: bamboo123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  bamboo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - postgres
+    environment:
+      - BAMBOO_HOME=/var/atlassian/application-data/bamboo
+    volumes:
+      - bamboo_data:/var/atlassian/application-data/bamboo
+      - /var/run/docker.sock:/var/run/docker.sock
+  web:
+    build:
+      context: ./nginx
+      dockerfile: nginx.Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/index.html:/usr/share/nginx/html/index.html
+
+
+volumes:
+  pgdata:
+  bamboo_data:
